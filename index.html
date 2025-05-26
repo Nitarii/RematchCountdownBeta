@@ -49,7 +49,7 @@
       z-index: 10;
       height: 100vh;
       display: flex;
-      flex-direction: column; /* Pour aligner verticalement le titre + compteur */
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       user-select: none;
@@ -62,9 +62,16 @@
       font-size: 5rem;
       color: #00ffcc;
       text-shadow:
-        2px 2px 5px rgba(0, 255, 204, 0.7),
-        0 0 10px #00ffcc,
-        0 0 20px #00ffcc;
+        /* contour blanc large, diffus */
+        0 0 5px #fff,
+        0 0 10px #fff,
+        /* contour noir plus diffus, un peu plus large */
+        0 0 15px rgba(0, 0, 0, 0.9),
+        0 0 25px rgba(0, 0, 0, 0.7),
+        /* néon cyan */
+        0 0 8px #00ffcc,
+        0 0 20px #00ffcc,
+        0 0 30px #008080;
       margin-bottom: 30px;
       user-select: none;
       text-align: center;
@@ -74,7 +81,8 @@
     /* Style horloge clapet */
     .countdown {
       display: flex;
-      gap: 15px;
+      align-items: center;
+      gap: 6px; /* Réduit l'espacement entre cases et colonnes */
     }
 
     .flip-unit {
@@ -88,6 +96,7 @@
       border-radius: 5px;
       overflow: hidden;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+      user-select: none;
     }
 
     .flip-inner {
@@ -172,6 +181,34 @@
       0% { transform: rotateX(90deg); }
       100% { transform: rotateX(0deg); }
     }
+
+    /* Style des deux-points ronds entre chaque case */
+    .colon {
+      position: relative;
+      width: 18px; /* taille cercle */
+      height: 120px; /* même hauteur que flip-unit */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      user-select: none;
+      margin: 0 4px; /* plus serré */
+      z-index: 11;
+    }
+
+    .colon-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: white;
+      position: relative;
+      -webkit-text-stroke: 1.5px black;
+      box-shadow:
+        0 0 0 1.5px black; /* contour noir fin */
+      margin: 6px 0; /* espacement entre les deux points */
+      box-sizing: border-box;
+    }
+
   </style>
 </head>
 <body>
@@ -183,10 +220,12 @@
     <div class="slide" style="background-image: url('https://static.wixstatic.com/media/52610a_44472ec2ffaa4984a9ea5887abb9948b~mv2.jpg/v1/fit/w_1040,h_763,q_90,enc_avif,quality_auto/52610a_44472ec2ffaa4984a9ea5887abb9948b~mv2.jpg');"></div>
   </div>
 
-  <!-- Compte à rebours -->
+  <!-- Titre -->
   <div class="countdown-wrapper" role="timer" aria-live="polite" aria-label="Compte à rebours">
-    <h1 class="countdown-title">Rematch when ?</h1>
-    <div class="countdown" aria-describedby="countdown-description">
+    <div class="countdown-title">Rematch when ?</div>
+
+    <!-- Compte à rebours -->
+    <div class="countdown" aria-describedby="countdown-description" aria-label="Temps restant">
       <div class="flip-unit" id="days" aria-label="Jours restants">
         <div class="flip-inner">
           <div class="current-value">00</div>
@@ -196,6 +235,12 @@
           </div>
         </div>
       </div>
+
+      <div class="colon" aria-hidden="true" role="presentation">
+        <div class="colon-dot"></div>
+        <div class="colon-dot"></div>
+      </div>
+
       <div class="flip-unit" id="hours" aria-label="Heures restantes">
         <div class="flip-inner">
           <div class="current-value">00</div>
@@ -205,6 +250,12 @@
           </div>
         </div>
       </div>
+
+      <div class="colon" aria-hidden="true" role="presentation">
+        <div class="colon-dot"></div>
+        <div class="colon-dot"></div>
+      </div>
+
       <div class="flip-unit" id="minutes" aria-label="Minutes restantes">
         <div class="flip-inner">
           <div class="current-value">00</div>
@@ -214,6 +265,12 @@
           </div>
         </div>
       </div>
+
+      <div class="colon" aria-hidden="true" role="presentation">
+        <div class="colon-dot"></div>
+        <div class="colon-dot"></div>
+      </div>
+
       <div class="flip-unit" id="seconds" aria-label="Secondes restantes">
         <div class="flip-inner">
           <div class="current-value">00</div>
