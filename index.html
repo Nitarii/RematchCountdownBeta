@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Compte à Rebours avec Diaporama</title>
   <style>
-    /* Reset basique */
     * {
       margin: 0;
       padding: 0;
@@ -17,15 +16,13 @@
       overflow: hidden;
       font-family: 'Courier New', Courier, monospace;
       background: black;
-      position: relative;
     }
 
-    /* Conteneur diaporama */
+    /* === SLIDESHOW === */
     .slideshow {
       position: fixed;
       inset: 0;
       z-index: 0;
-      overflow: hidden;
     }
 
     .slide {
@@ -35,7 +32,6 @@
       background-size: cover;
       opacity: 0;
       transition: opacity 1s ease-in-out;
-      will-change: opacity;
     }
 
     .slide.active {
@@ -43,7 +39,7 @@
       z-index: 1;
     }
 
-    /* Conteneur horloge */
+    /* === COUNTDOWN === */
     .countdown-wrapper {
       position: relative;
       z-index: 10;
@@ -53,36 +49,28 @@
       justify-content: center;
       align-items: center;
       user-select: none;
-      background: transparent;
     }
 
-    /* Titre au-dessus du compteur */
     .countdown-title {
       font-family: 'Arial Black', Arial, sans-serif;
       font-size: 5rem;
       color: #00ffcc;
-      text-shadow:
-        /* contour blanc large, diffus */
-        0 0 5px #fff,
-        0 0 10px #fff,
-        /* contour noir plus diffus, un peu plus large */
-        0 0 15px rgba(0, 0, 0, 0.9),
-        0 0 25px rgba(0, 0, 0, 0.7),
-        /* néon cyan */
-        0 0 8px #00ffcc,
-        0 0 20px #00ffcc,
-        0 0 30px #008080;
+      text-shadow: 
+        0 0 5px #fff, 
+        0 0 10px #fff, 
+        0 0 15px #000, 
+        0 0 25px #000, 
+        0 0 8px #00ffcc, 
+        0 0 20px #00ffcc;
       margin-bottom: 30px;
-      user-select: none;
       text-align: center;
       letter-spacing: 3px;
     }
 
-    /* Style horloge clapet */
     .countdown {
       display: flex;
       align-items: center;
-      gap: 6px; /* Réduit l'espacement entre cases et colonnes */
+      gap: 6px;
     }
 
     .flip-unit {
@@ -96,7 +84,6 @@
       border-radius: 5px;
       overflow: hidden;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-      user-select: none;
     }
 
     .flip-inner {
@@ -112,7 +99,6 @@
       width: 100%;
       height: 100%;
       transform-style: preserve-3d;
-      pointer-events: none;
     }
 
     .flip-top, .flip-bottom {
@@ -125,25 +111,21 @@
       align-items: center;
       justify-content: center;
       font-size: 4rem;
-      border-top: 2px solid #999;
-      border-bottom: 2px solid #999;
-      z-index: 2;
       backface-visibility: hidden;
+      z-index: 2;
     }
 
     .flip-top {
       top: 0;
       transform-origin: bottom;
       border-radius: 5px 5px 0 0;
-      border-bottom: none;
     }
 
     .flip-bottom {
       top: 50%;
       transform-origin: top;
-      border-radius: 0 0 5px 5px;
       transform: rotateX(90deg);
-      border-top: none;
+      border-radius: 0 0 5px 5px;
     }
 
     .current-value {
@@ -163,12 +145,11 @@
       border-radius: 5px;
     }
 
-    /* Animations flip */
-    .animate .flip-top {
+    .flip-unit.animate .flip-top {
       animation: flipTop 0.3s ease-in forwards;
     }
 
-    .animate .flip-bottom {
+    .flip-unit.animate .flip-bottom {
       animation: flipBottom 0.3s ease-out 0.3s forwards;
     }
 
@@ -182,18 +163,13 @@
       100% { transform: rotateX(0deg); }
     }
 
-    /* Style des deux-points ronds entre chaque case */
     .colon {
-      position: relative;
-      width: 18px; /* taille cercle */
-      height: 120px; /* même hauteur que flip-unit */
+      width: 18px;
+      height: 120px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      user-select: none;
-      margin: 0 4px; /* plus serré */
-      z-index: 11;
     }
 
     .colon-dot {
@@ -201,32 +177,143 @@
       height: 14px;
       border-radius: 50%;
       background: white;
-      position: relative;
-      -webkit-text-stroke: 1.5px black;
-      box-shadow:
-        0 0 0 1.5px black; /* contour noir fin */
-      margin: 6px 0; /* espacement entre les deux points */
-      box-sizing: border-box;
+      margin: 6px 0;
     }
 
+    /* === LOGO === */
+    .logo-container {
+      position: fixed;
+      top: 25px;
+      left: 25px;
+      z-index: 20;
+    }
+
+    .logo-link {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border-radius: 10px;
+    }
+
+    .logo-link:hover,
+    .logo-link:focus {
+      transform: rotate(-5deg) scale(1.1);
+      box-shadow: 0 0 15px #00ffcc;
+      outline: none;
+    }
+
+    .logo-image {
+      height: 60px;
+      width: auto;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .game-now-text {
+      font-size: 1rem;
+      font-weight: 700;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 6px;
+      user-select: none;
+      transition: opacity 0.4s ease, transform 0.3s ease;
+      opacity: 0;
+      pointer-events: none;
+      text-shadow: 0 0 6px #00ffcc;
+    }
+
+    .logo-link:hover .game-now-text,
+    .logo-link:focus .game-now-text,
+    .game-now-text.visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    /* === FOOTER === */
+    .footer-text {
+      position: fixed;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: black;
+      z-index: 20;
+      text-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
+    }
+
+    .github-link {
+      color: black;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s ease;
+    }
+
+    .github-link:hover {
+      border-color: black;
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 768px) {
+      .countdown-title {
+        font-size: 3rem;
+      }
+
+      .flip-unit {
+        width: 80px;
+        height: 100px;
+        font-size: 3rem;
+      }
+
+      .flip-top, .flip-bottom {
+        font-size: 3rem;
+      }
+
+      .current-value {
+        font-size: 3rem;
+      }
+
+      .colon {
+        height: 100px;
+      }
+
+      .logo-container {
+        top: 20px;
+        left: 20px;
+      }
+
+      .logo-image {
+        height: 50px;
+      }
+    }
   </style>
 </head>
 <body>
-
-  <!-- Diaporama en fond -->
+  <!-- Slideshow -->
   <div class="slideshow" aria-hidden="true">
-    <div class="slide active" style="background-image: url('https://static.wixstatic.com/media/52610a_71354917fbf142e3a8f071fe9e7cfb30~mv2.png/v1/fit/w_1040,h_763,q_90,enc_avif,quality_auto/52610a_71354917fbf142e3a8f071fe9e7cfb30~mv2.png');"></div>
-    <div class="slide" style="background-image: url('https://static.wixstatic.com/media/52610a_3a25dcf79eb0439385e381781a82b5f4~mv2.jpg/v1/fit/w_1040,h_763,q_90,enc_avif,quality_auto/52610a_3a25dcf79eb0439385e381781a82b5f4~mv2.jpg');"></div>
-    <div class="slide" style="background-image: url('https://static.wixstatic.com/media/52610a_44472ec2ffaa4984a9ea5887abb9948b~mv2.jpg/v1/fit/w_1040,h_763,q_90,enc_avif,quality_auto/52610a_44472ec2ffaa4984a9ea5887abb9948b~mv2.jpg');"></div>
+    <div class="slide active" style="background-image: url('https://static.wixstatic.com/media/52610a_71354917fbf142e3a8f071fe9e7cfb30~mv2.png');"></div>
+    <div class="slide" style="background-image: url('https://static.wixstatic.com/media/52610a_3a25dcf79eb0439385e381781a82b5f4~mv2.jpg');"></div>
+    <div class="slide" style="background-image: url('https://static.wixstatic.com/media/52610a_44472ec2ffaa4984a9ea5887abb9948b~mv2.jpg');"></div>
   </div>
 
-  <!-- Titre -->
-  <div class="countdown-wrapper" role="timer" aria-live="polite" aria-label="Compte à rebours">
+  <!-- Logo -->
+  <div class="logo-container">
+    <a href="https://www.playrematch.com/" target="_blank" rel="noopener" class="logo-link">
+      <img src="https://static.wixstatic.com/media/52610a_dd861e2eebe044aba86af76068499c1d~mv2.png" alt="Logo PlayRematch" class="logo-image">
+      <div class="game-now-text" id="gameNowText">Get the game now!</div>
+    </a>
+  </div>
+
+  <!-- Countdown -->
+  <div class="countdown-wrapper" role="timer">
     <div class="countdown-title">Rematch when ?</div>
-
-    <!-- Compte à rebours -->
-    <div class="countdown" aria-describedby="countdown-description" aria-label="Temps restant">
-      <div class="flip-unit" id="days" aria-label="Jours restants">
+    <div class="countdown">
+      <div class="flip-unit" id="days">
         <div class="flip-inner">
           <div class="current-value">00</div>
           <div class="flip-card">
@@ -235,13 +322,11 @@
           </div>
         </div>
       </div>
-
-      <div class="colon" aria-hidden="true" role="presentation">
+      <div class="colon">
         <div class="colon-dot"></div>
         <div class="colon-dot"></div>
       </div>
-
-      <div class="flip-unit" id="hours" aria-label="Heures restantes">
+      <div class="flip-unit" id="hours">
         <div class="flip-inner">
           <div class="current-value">00</div>
           <div class="flip-card">
@@ -250,13 +335,11 @@
           </div>
         </div>
       </div>
-
-      <div class="colon" aria-hidden="true" role="presentation">
+      <div class="colon">
         <div class="colon-dot"></div>
         <div class="colon-dot"></div>
       </div>
-
-      <div class="flip-unit" id="minutes" aria-label="Minutes restantes">
+      <div class="flip-unit" id="minutes">
         <div class="flip-inner">
           <div class="current-value">00</div>
           <div class="flip-card">
@@ -265,13 +348,11 @@
           </div>
         </div>
       </div>
-
-      <div class="colon" aria-hidden="true" role="presentation">
+      <div class="colon">
         <div class="colon-dot"></div>
         <div class="colon-dot"></div>
       </div>
-
-      <div class="flip-unit" id="seconds" aria-label="Secondes restantes">
+      <div class="flip-unit" id="seconds">
         <div class="flip-inner">
           <div class="current-value">00</div>
           <div class="flip-card">
@@ -283,72 +364,92 @@
     </div>
   </div>
 
-  <script>
-    // Diaporama simple automatique
-    const slides = document.querySelectorAll('.slide');
-    let currentSlide = 0;
-    const slideInterval = 5000;
+  <!-- Footer -->
+  <div class="footer-text">
+    MIT License © 2025 <a href="https://github.com/Nitarii/RematchCountdownBeta" target="_blank" class="github-link">Nitarii@github</a>
+  </div>
 
+  <script>
+    // Config
+    const CONFIG = {
+      slideInterval: 5000,
+      countdownInterval: 1000,
+      textToggleInterval: 6000
+    };
+
+    // Elements
+    const slides = document.querySelectorAll('.slide');
+    const countdownElements = {
+      days: document.getElementById('days'),
+      hours: document.getElementById('hours'),
+      minutes: document.getElementById('minutes'),
+      seconds: document.getElementById('seconds')
+    };
+    const gameNowText = document.getElementById('gameNowText');
+
+    // Date cible : 28 mai 2025 12h00 GMT
+    const targetDate = new Date('2025-05-28T12:00:00Z');
+
+    // Slideshow
+    let currentSlide = 0;
     function nextSlide() {
       slides[currentSlide].classList.remove('active');
       currentSlide = (currentSlide + 1) % slides.length;
       slides[currentSlide].classList.add('active');
     }
-    setInterval(nextSlide, slideInterval);
 
-    // Date cible en UTC (28 mai 2025 à 12h00 UTC)
-    const targetDate = new Date(Date.UTC(2025, 4, 28, 12, 0, 0));
+    // Countdown
+    function pad(n) {
+      return n < 10 ? '0' + n : n;
+    }
+
+    function updateUnit(unit, value) {
+      const currentValEl = unit.querySelector('.current-value');
+      const flipTop = unit.querySelector('.flip-top');
+      const flipBottom = unit.querySelector('.flip-bottom');
+      
+      if (currentValEl.textContent === value) return;
+      
+      flipTop.textContent = currentValEl.textContent;
+      flipBottom.textContent = value;
+      unit.classList.add('animate');
+      
+      setTimeout(() => {
+        currentValEl.textContent = value;
+        unit.classList.remove('animate');
+      }, 600);
+    }
 
     function updateCountdown() {
       const now = new Date();
-      const nowUTC = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
-      const totalSeconds = Math.floor((targetDate - nowUTC) / 1000);
+      let diff = Math.max(0, targetDate - now);
+      
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      diff %= (1000 * 60 * 60 * 24);
+      
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      diff %= (1000 * 60 * 60);
+      
+      const minutes = Math.floor(diff / (1000 * 60));
+      diff %= (1000 * 60);
+      
+      const seconds = Math.floor(diff / 1000);
 
-      if (totalSeconds < 0) {
-        setUnit('days', 0);
-        setUnit('hours', 0);
-        setUnit('minutes', 0);
-        setUnit('seconds', 0);
-        return;
-      }
-
-      const days = Math.floor(totalSeconds / 86400);
-      const hours = Math.floor((totalSeconds % 86400) / 3600);
-      const minutes = Math.floor((totalSeconds % 3600) / 60);
-      const seconds = totalSeconds % 60;
-
-      setUnit('days', days);
-      setUnit('hours', hours);
-      setUnit('minutes', minutes);
-      setUnit('seconds', seconds);
+      updateUnit(countdownElements.days, pad(days));
+      updateUnit(countdownElements.hours, pad(hours));
+      updateUnit(countdownElements.minutes, pad(minutes));
+      updateUnit(countdownElements.seconds, pad(seconds));
     }
 
-    function setUnit(id, value) {
-      const unit = document.getElementById(id);
-      const display = unit.querySelector('.current-value');
-      const flipTop = unit.querySelector('.flip-top');
-      const flipBottom = unit.querySelector('.flip-bottom');
-      const card = unit.querySelector('.flip-card');
-      const formatted = String(value).padStart(2, '0');
-
-      if (display.textContent !== formatted) {
-        flipTop.textContent = display.textContent;
-        flipBottom.textContent = formatted;
-
-        card.classList.remove('animate');
-        // trigger reflow to restart animation
-        void card.offsetWidth;
-        card.classList.add('animate');
-
-        setTimeout(() => {
-          display.textContent = formatted;
-        }, 600);
-      }
-    }
-
-    // Initialisation
+    // Init
     updateCountdown();
-    setInterval(updateCountdown, 1000);
+
+    // Intervals
+    setInterval(nextSlide, CONFIG.slideInterval);
+    setInterval(updateCountdown, CONFIG.countdownInterval);
+    setInterval(() => {
+      gameNowText.classList.toggle('visible');
+    }, CONFIG.textToggleInterval);
   </script>
 </body>
 </html>
