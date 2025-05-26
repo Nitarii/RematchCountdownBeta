@@ -1,3 +1,3 @@
 Hello, 
-  made a small site to have a visual timer for the release of the Rematch (https://www.playrematch.com/) Open Beta using Chatgpt.
+  made a small site to have a visual timer for the release of the Rematch (https://www.playrematch.com/) Open Beta.
   --->https://nitarii.github.io/RematchCountdownBeta/<---
