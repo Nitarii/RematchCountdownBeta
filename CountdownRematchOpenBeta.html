@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Compte à Rebours avec Diaporama</title>
+  <style>
+    /* Reset basique */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Courier New', Courier, monospace;
+      background: black;
+      position: relative;
+    }
+
+    /* Conteneur diaporama */
+    .slideshow {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      background-position: center;
+      background-size: cover;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+      will-change: opacity;
+    }
+
+    .slide.active {
+      opacity: 1;
+      z-index: 1;
+    }
+
+    /* Conteneur horloge */
+    .countdown-wrapper {
+      position: relative;
+      z-index: 10;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      user-select: none;
+      background: transparent;
+    }
+
+    /* Style horloge clapet */
+    .countdown {
+      display: flex;
+      gap: 15px;
+    }
+
+    .flip-unit {
+      background: black;
+      font-size: 4rem;
+      width: 100px;
+      height: 120px;
+      text-align: center;
+      position: relative;
+      perspective: 1000px;
+      border-radius: 5px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    .flip-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .flip-card {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      pointer-events: none;
+    }
+
+    .flip-top, .flip-bottom {
+      position: absolute;
+      width: 100%;
+      height: 50%;
+      background-color: #111;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      border-top: 2px solid #999;
+      border-bottom: 2px solid #999;
+      z-index: 2;
+      backface-visibility: hidden;
+    }
+
+    .flip-top {
+      top: 0;
+      transform-origin: bottom;
+      border-radius: 5px 5px 0 0;
+      border-bottom: none;
+    }
+
+    .flip-bottom {
+      top: 50%;
+      transform-origin: top;
+      border-radius: 0 0 5px 5px;
+      transform: rotateX(90deg);
+      border-top: none;
+    }
+
+    .current-value {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 4rem;
+      z-index: 1;
+      border: 2px solid #444;
+      background-color: #000;
+      border-radius: 5px;
+    }
+
+    /* Animations flip */
+    .animate .flip-top {
+      animation: flipTop 0.3s ease-in forwards;
+    }
+
+    .animate .flip-bottom {
+      animation: flipBottom 0.3s ease-out 0.3s forwards;
+    }
+
+    @keyframes flipTop {
+      0% { transform: rotateX(0deg); }
+      100% { transform: rotateX(-90deg); }
+    }
+
+    @keyframes flipBottom {
+      0% { transform: rotateX(90deg); }
+      100% { transform: rotateX(0deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Diaporama en fond -->
+  <div class="slideshow" aria-hidden="true">
+    <div class="slide active" style="background-image: url('https://static.wixstatic.com/media/52610a_71354917fbf142e3a8f071fe9e7cfb30~mv2.png/v1/fit/w_1040,h_763,q_90,enc_avif,quality_auto/52610a_71354917fbf142e3a8f071fe9e7cfb30~mv2.png');"></div>
+    <div class="slide" style="background-image: url('https://static.wixstatic.com/media/52610a_3a25dcf79eb0439385e381781a82b5f4~mv2.jpg/v1/fit/w_1040,h_763,q_90,enc_avif,quality_auto/52610a_3a25dcf79eb0439385e381781a82b5f4~mv2.jpg');"></div>
+    <div class="slide" style="background-image: url('https://static.wixstatic.com/media/52610a_44472ec2ffaa4984a9ea5887abb9948b~mv2.jpg/v1/fit/w_1040,h_763,q_90,enc_avif,quality_auto/52610a_44472ec2ffaa4984a9ea5887abb9948b~mv2.jpg');"></div>
+  </div>
+
+  <!-- Compte à rebours -->
+  <div class="countdown-wrapper" role="timer" aria-live="polite" aria-label="Compte à rebours">
+    <div class="countdown" aria-describedby="countdown-description">
+      <div class="flip-unit" id="days" aria-label="Jours restants">
+        <div class="flip-inner">
+          <div class="current-value">00</div>
+          <div class="flip-card">
+            <div class="flip-top"></div>
+            <div class="flip-bottom"></div>
+          </div>
+        </div>
+      </div>
+      <div class="flip-unit" id="hours" aria-label="Heures restantes">
+        <div class="flip-inner">
+          <div class="current-value">00</div>
+          <div class="flip-card">
+            <div class="flip-top"></div>
+            <div class="flip-bottom"></div>
+          </div>
+        </div>
+      </div>
+      <div class="flip-unit" id="minutes" aria-label="Minutes restantes">
+        <div class="flip-inner">
+          <div class="current-value">00</div>
+          <div class="flip-card">
+            <div class="flip-top"></div>
+            <div class="flip-bottom"></div>
+          </div>
+        </div>
+      </div>
+      <div class="flip-unit" id="seconds" aria-label="Secondes restantes">
+        <div class="flip-inner">
+          <div class="current-value">00</div>
+          <div class="flip-card">
+            <div class="flip-top"></div>
+            <div class="flip-bottom"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Diaporama simple automatique
+    const slides = document.querySelectorAll('.slide');
+    let currentSlide = 0;
+    const slideInterval = 5000;
+
+    function nextSlide() {
+      slides[currentSlide].classList.remove('active');
+      currentSlide = (currentSlide + 1) % slides.length;
+      slides[currentSlide].classList.add('active');
+    }
+    setInterval(nextSlide, slideInterval);
+
+    // Date cible en UTC (28 mai 2025 à 12h00 UTC)
+    const targetDate = new Date(Date.UTC(2025, 4, 28, 12, 0, 0));
+
+    function updateCountdown() {
+      const now = new Date();
+      const nowUTC = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
+      const totalSeconds = Math.floor((targetDate - nowUTC) / 1000);
+
+      if (totalSeconds < 0) {
+        setUnit('days', 0);
+        setUnit('hours', 0);
+        setUnit('minutes', 0);
+        setUnit('seconds', 0);
+        return;
+      }
+
+      const days = Math.floor(totalSeconds / 86400);
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      setUnit('days', days);
+      setUnit('hours', hours);
+      setUnit('minutes', minutes);
+      setUnit('seconds', seconds);
+    }
+
+    function setUnit(id, value) {
+      const unit = document.getElementById(id);
+      const display = unit.querySelector('.current-value');
+      const flipTop = unit.querySelector('.flip-top');
+      const flipBottom = unit.querySelector('.flip-bottom');
+      const card = unit.querySelector('.flip-card');
+      const formatted = String(value).padStart(2, '0');
+
+      if (display.textContent !== formatted) {
+        flipTop.textContent = display.textContent;
+        flipBottom.textContent = formatted;
+
+        card.classList.remove('animate');
+        // trigger reflow to restart animation
+        void card.offsetWidth;
+        card.classList.add('animate');
+
+        setTimeout(() => {
+          display.textContent = formatted;
+        }, 600);
+      }
+    }
+
+    // Initialisation
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  </script>
+</body>
+</html>
