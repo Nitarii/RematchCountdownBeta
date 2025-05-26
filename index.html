@@ -49,10 +49,26 @@
       z-index: 10;
       height: 100vh;
       display: flex;
+      flex-direction: column; /* Pour aligner verticalement le titre + compteur */
       justify-content: center;
       align-items: center;
       user-select: none;
       background: transparent;
+    }
+
+    /* Titre au-dessus du compteur */
+    .countdown-title {
+      font-family: 'Arial Black', Arial, sans-serif;
+      font-size: 5rem;
+      color: #00ffcc;
+      text-shadow:
+        2px 2px 5px rgba(0, 255, 204, 0.7),
+        0 0 10px #00ffcc,
+        0 0 20px #00ffcc;
+      margin-bottom: 30px;
+      user-select: none;
+      text-align: center;
+      letter-spacing: 3px;
     }
 
     /* Style horloge clapet */
@@ -169,6 +185,7 @@
 
   <!-- Compte à rebours -->
   <div class="countdown-wrapper" role="timer" aria-live="polite" aria-label="Compte à rebours">
+    <h1 class="countdown-title">Rematch when ?</h1>
     <div class="countdown" aria-describedby="countdown-description">
       <div class="flip-unit" id="days" aria-label="Jours restants">
         <div class="flip-inner">
